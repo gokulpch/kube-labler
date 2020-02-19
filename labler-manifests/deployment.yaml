@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clotho
+  namespace: clotho
+  labels:
+    app: clotho
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clotho
+  template:
+    metadata:
+      labels:
+        app: clotho
+    spec:
+      serviceAccountName: clotho
+      containers:
+        - name: clotho
+          image: gokulpch/kube-labler:v1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GRAFFITI_LOG_LEVEL
+              value: debug
+            - name: GRAFFITI_CHECK_EXISTING
+              value: "true"
+            - name: GRAFFITI_CONFIG
+              value: "/config/clotho-config.yaml"
+          volumeMounts:
+          - name: webhook-certs
+            mountPath: /tls
+          - name: config
+            mountPath: /config
+          ports:
+            - containerPort: 8443
+          livenessProbe:
+            httpGet:
+              path: /am-i-healthy
+              port: 9999
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /am-i-healthy
+              port: 9999
+            periodSeconds: 10
+            timeoutSeconds: 3
+      volumes:
+      - name: webhook-certs
+        secret:
+          secretName: clotho-certs
+      - name: config
+        configMap:
+          name: clotho-config
+

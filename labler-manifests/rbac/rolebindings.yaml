@@ -1,0 +1,60 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: clotho-manage-mutating-webhooks
+  labels:
+    app: clotho
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: manage-mutating-webhooks
+subjects:
+  - kind: ServiceAccount
+    name: clotho
+    namespace: clotho
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: clotho-read-apiserver-authentication
+  namespace: clotho
+  labels:
+    app: clotho
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: read-apiserver-authentication
+subjects:
+  - kind: ServiceAccount
+    name: clotho
+    namespace: clotho
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: clotho-list-namespaces
+  labels:
+    app: clotho
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: list-namespaces
+subjects:
+  - kind: ServiceAccount
+    name: clotho
+    namespace: clotho
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: clotho-cluster-admin
+  labels:
+    app: clotho
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: clotho
+    namespace: clotho
